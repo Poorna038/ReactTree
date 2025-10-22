@@ -1,0 +1,162 @@
+/* Sidebar container */
+.sidebar {
+  width: 260px;
+  background: #ffffff;
+  border-right: 1px solid #ddd;
+  height: 100vh;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* Top navigation buttons: All, Board, Graph, Recent */
+.sidebar-nav {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  font-weight: 1000;
+  color: #555;
+  cursor: pointer;
+  padding: 10px 12px;
+  transition: color 0.2s, text-decoration 0.2s;
+}
+
+.nav-btn:hover {
+  text-decoration: underline;
+  color: #e65f5f;
+}
+
+/* Collections header and + button */
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.add-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.add-btn:hover {
+  color: #007bff;
+}
+
+/* Tree container */
+.tree {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+/* Individual tree node */
+.tree-node {
+  margin-left: 10px;
+  font-size: 14px;
+}
+
+/* Node header: title + action buttons */
+.node-header, h3 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  color: #1e1586;
+}
+
+/* Node title */
+.node-header span {
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 3px;
+  transition: background 0.2s;
+}
+
+.node-header span:hover {
+  background: #f2f2f2;
+}
+
+/* Node action buttons + and trash */
+.node-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 5px;
+  font-size: 14px;
+  padding: 2px 4px;
+  transition: color 0.2s;
+}
+
+.node-actions button:hover {
+  color: #007bff;
+}
+
+/* Children container (indent + dashed line) */
+.node-children {
+  margin-left: 15px;
+  border-left: 1px dashed #ccc;
+  padding-left: 8px;
+}
+
+/* Input box for manual naming (3rd-level nodes) */
+.new-node-input {
+  width: 95%;
+  padding: 4px 6px;
+  font-size: 14px;
+  margin-top: 3px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+
+.new-node-input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 3px rgba(0, 123, 255, 0.5);
+}
+
+/* Scrollbar customization for tree */
+.tree::-webkit-scrollbar {
+  width: 6px;
+}
+
+.tree::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 3px;
+}
+
+.tree::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px;
+  }
+
+  .nav-btn {
+    padding: 5px 8px;
+    font-size: 13px;
+  }
+
+  .node-header span {
+    font-size: 13px;
+  }
+
+  .node-actions button {
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,31 @@
+/* Main layout flex */
+.main-content {
+  display: flex;
+  height: calc(100vh - 100px); /* subtract header + taskbar height */
+  overflow: hidden;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 320px;
+  border-right: 1px solid #ddd;
+  overflow-y: auto;
+  background-color: #f9f9f9;
+}
+
+/* Editor panel */
+.editor, .editor-placeholder {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* Placeholder styling */
+.editor-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #b66f6f;
+  font-size: 18px;
+  font-style: italic;
+}

@@ -3,59 +3,75 @@ import { TreeContext } from "./TreeContext";
 import "./Sidebar.css";
 
 const TreeNode = ({ node, parentPath = "" }) => {
-  const { setSelectedNode, addNode, removeNode } = useContext(TreeContext);
-  const [isEditing, setIsEditing] = useState(false);
-  const [newNodeName, setNewNodeName] = useState("");
+  const { addNode, removeNode, updateNodeTitle, setSelectedNode } =
+    useContext(TreeContext);
+  const [isRenaming, setIsRenaming] = useState(false);
+  const [newTitle, setNewTitle] = useState(node.title);
 
-  // ✅ Determine depth based on parentPath
-  const depth = parentPath.split(".").length;
+  const depth = parentPath ? parentPath.split(".").length : 1;
+  let clickTimer = null;
 
-  const handleAddClick = () => {
-    if (depth === 3) {
-      if (!node.title || node.title.startsWith("Collection")) {
-        setIsEditing(true);
-      }
-    } else {
-      addNode(node.id);
+  const handleSingleClick = () => {
+    
+    clickTimer = setTimeout(() => {
+      setSelectedNode(node);
+    }, 200);
+  };
+
+  const handleDoubleClick = () => {
+    clearTimeout(clickTimer);
+    setIsRenaming(true);
+  };
+
+  const handleRenameConfirm = (e) => {
+    if (e.key === "Enter" && newTitle.trim()) {
+      updateNodeTitle(node.id, newTitle.trim());
+      setIsRenaming(false);
     }
   };
 
-  const handleAddConfirm = (e) => {
-    if (e.key === "Enter" && newNodeName.trim()) {
-      addNode(node.id, newNodeName.trim());
-      setNewNodeName("");
-      setIsEditing(false);
-    }
+  const handleBlur = () => {
+    if (newTitle.trim()) updateNodeTitle(node.id, newTitle.trim());
+    setIsRenaming(false);
   };
 
-  const handleSelectNode = () => {
-  const nodeDepth = parentPath.split(".").length;
-  setSelectedNode({ ...node, depth: nodeDepth, parentPath });
-};
+  const handleAddClick = (e) => {
+    e.stopPropagation();
+    addNode(node.id);
+  };
+
+  const handleRemoveClick = (e) => {
+    e.stopPropagation();
+    removeNode(node.id);
+  };
 
   return (
-    <div className="tree-node">
-      <div className="node-header">
-        {/* ✅ Updated click behavior */}
-        <span onClick={handleSelectNode}>{node.title}</span>
+    <div className="tree-node" style={{ marginLeft: depth * 10 }}>
+      <div
+        className="node-header"
+        onClick={handleSingleClick}
+        onDoubleClick={handleDoubleClick}
+        style={{ cursor: "pointer", userSelect: "none" }}
+      >
+        {isRenaming ? (
+          <input
+            type="text"
+            className="rename-input"
+            value={newTitle}
+            onChange={(e) => setNewTitle(e.target.value)}
+            onKeyDown={handleRenameConfirm}
+            onBlur={handleBlur}
+            autoFocus
+          />
+        ) : (
+          <span>{node.title}</span>
+        )}
+
         <div className="node-actions">
-          {/* Hide + button for 4th-level nodes */}
-          {!(depth === 4) && <button onClick={handleAddClick}>＋</button>}
-          <button onClick={() => removeNode(node.id)}>🗑</button>
+          <button onClick={handleAddClick}>＋</button>
+          <button onClick={handleRemoveClick}>🗑</button>
         </div>
       </div>
-
-      {isEditing && (
-        <input
-          type="text"
-          className="new-node-input"
-          placeholder="Enter collection name"
-          value={newNodeName}
-          onChange={(e) => setNewNodeName(e.target.value)}
-          onKeyDown={handleAddConfirm}
-          autoFocus
-        />
-      )}
 
       {node.children?.length > 0 && (
         <div className="node-children">

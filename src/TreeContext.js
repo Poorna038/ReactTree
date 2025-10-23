@@ -23,41 +23,32 @@ export const TreeProvider = ({ children }) => {
       content: "",
     };
 
-    const addRecursively = (nodes, level = 1) => {
+    const addRecursively = (nodes) => {
       if (!parentId) {
         const maxNumber = nodes.reduce((max, node) => {
           const match = node.title.match(/Collection (\d+)/);
           return match ? Math.max(max, parseInt(match[1], 10)) : max;
         }, 0);
-
         newNode.title = name || `Collection ${maxNumber + 1}`;
         return [...nodes, newNode];
       }
 
       return nodes.map((node) => {
         if (node.id === parentId) {
-          if (level >= 4) {
-            alert("You cannot add more levels under this node.");
-            return node;
-          }
+          const maxNumber = node.children.reduce((max, child) => {
+            const parts = child.title.split(".");
+            const lastPart = parseInt(parts[parts.length - 1], 10);
+            return !isNaN(lastPart) ? Math.max(max, lastPart) : max;
+          }, 0);
 
-          if (level < 3) {
-            const maxNumber = node.children.reduce((max, child) => {
-              const parts = child.title.split(".");
-              const lastPart = parseInt(parts[parts.length - 1], 10);
-              return !isNaN(lastPart) ? Math.max(max, lastPart) : max;
-            }, 0);
-
-            newNode.title = name || `${node.title}.${maxNumber + 1}`;
-          } else {
-            newNode.title = name || "";
-          }
-
+          newNode.title =
+            name ||
+            `${node.title}.${maxNumber + 1}`.replace("Collection ", "Collection ");
           return { ...node, children: [...node.children, newNode] };
         }
 
         if (node.children?.length > 0) {
-          return { ...node, children: addRecursively(node.children, level + 1) };
+          return { ...node, children: addRecursively(node.children) };
         }
 
         return node;
@@ -83,12 +74,9 @@ export const TreeProvider = ({ children }) => {
   const updateContent = (id, content) => {
     const updateRecursively = (nodes) =>
       nodes.map((node) => {
-        if (node.id === id) {
-          return { ...node, content };
-        }
-        if (node.children?.length > 0) {
+        if (node.id === id) return { ...node, content };
+        if (node.children?.length > 0)
           return { ...node, children: updateRecursively(node.children) };
-        }
         return node;
       });
 
@@ -99,12 +87,9 @@ export const TreeProvider = ({ children }) => {
   const updateNodeTitle = (id, newTitle) => {
     const updateRecursively = (nodes) =>
       nodes.map((node) => {
-        if (node.id === id) {
-          return { ...node, title: newTitle };
-        }
-        if (node.children?.length > 0) {
+        if (node.id === id) return { ...node, title: newTitle };
+        if (node.children?.length > 0)
           return { ...node, children: updateRecursively(node.children) };
-        }
         return node;
       });
 

@@ -26,7 +26,7 @@ const Header = () => {
     <header className="header">
       <div className="left">
         <button className="hamburger">☰</button>
-        <h2>DFIN</h2>
+        <h2>Digital Company</h2>
       </div>
 
       <div className="right">

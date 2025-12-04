@@ -1,69 +1,96 @@
-import React, { useContext, useState } from "react";
+// Sidebar.jsx
+import React, { useContext, useState, useRef } from "react";
 import { TreeContext } from "./TreeContext";
 import "./Sidebar.css";
 
 const TreeNode = ({ node, parentPath = "" }) => {
-  const { setSelectedNode, addNode, removeNode } = useContext(TreeContext);
-  const [isEditing, setIsEditing] = useState(false);
-  const [newNodeName, setNewNodeName] = useState("");
+  const { addNode, removeNode, updateNodeTitle, setSelectedNode, expandedIds, toggleExpand } =
+    useContext(TreeContext);
 
-  // ✅ Determine depth based on parentPath
-  const depth = parentPath.split(".").length;
+  const [isRenaming, setIsRenaming] = useState(false);
+  const [newTitle, setNewTitle] = useState(node.title);
+  const nodeRef = useRef(null);
 
-  const handleAddClick = () => {
-    if (depth === 3) {
-      if (!node.title || node.title.startsWith("Collection")) {
-        setIsEditing(true);
-      }
-    } else {
-      addNode(node.id);
+  const depth = parentPath ? parentPath.split(".").length : 1;
+
+  const handleSelect = (e) => {
+    e.stopPropagation();
+    // pass parentPath into selected node so EditorPanel can build breadcrumb
+    setSelectedNode({ ...node, parentPath });
+  };
+
+  const handleRenameStart = (e) => {
+    e.stopPropagation();
+    setIsRenaming(true);
+    setTimeout(() => nodeRef.current?.focus(), 0);
+  };
+
+  const handleRenameConfirm = (e) => {
+    if (e.key === "Enter" && newTitle.trim()) {
+      updateNodeTitle(node.id, newTitle.trim());
+      setIsRenaming(false);
     }
   };
 
-  const handleAddConfirm = (e) => {
-    if (e.key === "Enter" && newNodeName.trim()) {
-      addNode(node.id, newNodeName.trim());
-      setNewNodeName("");
-      setIsEditing(false);
-    }
+  const handleBlur = () => {
+    if (newTitle.trim()) updateNodeTitle(node.id, newTitle.trim());
+    setIsRenaming(false);
   };
 
-  const handleSelectNode = () => {
-  const nodeDepth = parentPath.split(".").length;
-  setSelectedNode({ ...node, depth: nodeDepth, parentPath });
-};
+  const handleAddClick = (e) => {
+    e.stopPropagation();
+    addNode(node.id);
+  };
+
+  const handleRemoveClick = (e) => {
+    e.stopPropagation();
+    removeNode(node.id);
+  };
+
+  const isExpanded = expandedIds.has(node.id);
+  const hasChildren = node.children && node.children.length > 0;
 
   return (
-    <div className="tree-node">
-      <div className="node-header">
-        {/* ✅ Updated click behavior */}
-        <span onClick={handleSelectNode}>{node.title}</span>
+    <div className="tree-node" style={{ paddingLeft: (depth - 1) * 14 }}>
+      <div
+        className={`node-row ${/* selected styling is controlled by EditorPanel's selectedNode */ ""}`}
+        onClick={handleSelect}
+        onDoubleClick={handleRenameStart}
+        role="button"
+      >
+        <div className="chev" onClick={(e) => { e.stopPropagation(); if (hasChildren) toggleExpand(node.id); }}>
+          {hasChildren ? (isExpanded ? "▾" : "▸") : <span style={{ width: 12, display: "inline-block" }} />}
+        </div>
+
+        <div className="node-title" title={node.title}>
+          {isRenaming ? (
+            <input
+              ref={nodeRef}
+              className="rename-input"
+              value={newTitle}
+              onChange={(e) => setNewTitle(e.target.value)}
+              onKeyDown={handleRenameConfirm}
+              onBlur={handleBlur}
+            />
+          ) : (
+            <span>{node.title}</span>
+          )}
+        </div>
+
         <div className="node-actions">
-          {/* Hide + button for 4th-level nodes */}
-          {!(depth === 4) && <button onClick={handleAddClick}>＋</button>}
-          <button onClick={() => removeNode(node.id)}>🗑</button>
+          <button className="icon-btn" onClick={handleAddClick} title="Add child">＋</button>
+          <button className="icon-btn" onClick={handleRenameStart} title="Rename">✎</button>
+          <button className="icon-btn danger" onClick={handleRemoveClick} title="Delete">🗑</button>
         </div>
       </div>
 
-      {isEditing && (
-        <input
-          type="text"
-          className="new-node-input"
-          placeholder="Enter collection name"
-          value={newNodeName}
-          onChange={(e) => setNewNodeName(e.target.value)}
-          onKeyDown={handleAddConfirm}
-          autoFocus
-        />
-      )}
-
-      {node.children?.length > 0 && (
+      {hasChildren && isExpanded && (
         <div className="node-children">
-          {node.children.map((child, index) => (
+          {node.children.map((child, idx) => (
             <TreeNode
               key={child.id}
               node={child}
-              parentPath={`${parentPath ? parentPath + "." : ""}${index + 1}`}
+              parentPath={`${parentPath ? parentPath + "." : ""}${idx + 1}`}
             />
           ))}
         </div>
@@ -86,15 +113,17 @@ const Sidebar = () => {
 
       <div className="sidebar-header">
         <h3>Collections</h3>
-        <button className="add-btn" onClick={() => addNode(null)}>
-          ＋
-        </button>
+        <button className="add-btn" onClick={() => addNode(null)}>＋</button>
       </div>
 
-      <div className="tree">
-        {tree.map((node, index) => (
-          <TreeNode key={node.id} node={node} parentPath={`${index + 1}`} />
-        ))}
+      <div className="tree" role="tree">
+        {tree.length === 0 ? (
+          <div className="empty">No collections yet — click ＋ to add</div>
+        ) : (
+          tree.map((node, index) => (
+            <TreeNode key={node.id} node={node} parentPath={`${index + 1}`} />
+          ))
+        )}
       </div>
     </aside>
   );

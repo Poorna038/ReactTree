@@ -1,162 +1,180 @@
-/* Sidebar container */
+/* ===========================
+   SIDEBAR MAIN CONTAINER
+   ===========================*/
 .sidebar {
-  width: 260px;
-  background: #ffffff;
-  border-right: 1px solid #ddd;
+  width: 280px;
+  border-right: 1px solid #e9e9e9;
+  padding: 18px;
+  background: #fafafa;
   height: 100vh;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
+  overflow-y: auto;
+  font-family: Inter, sans-serif;
 }
 
-/* Top navigation buttons: All, Board, Graph, Recent */
+/* Navigation Buttons (All / Board / Recent...) */
 .sidebar-nav {
   display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 5px;
+  gap: 8px;
+  margin-bottom: 20px;
 }
 
 .nav-btn {
-  background: none;
+  padding: 6px 12px;
   border: none;
-  font-weight: 1000;
-  color: #555;
+  background: #f2f2f2;
+  border-radius: 6px;
   cursor: pointer;
-  padding: 10px 12px;
-  transition: color 0.2s, text-decoration 0.2s;
+  font-size: 14px;
 }
 
 .nav-btn:hover {
-  text-decoration: underline;
-  color: #e65f5f;
+  background: #e2e2e2;
 }
 
-/* Collections header and + button */
+/* ===========================
+   SIDEBAR HEADER
+   ===========================*/
 .sidebar-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
+  justify-content: space-between;
+  margin-bottom: 10px;
 }
 
+.sidebar-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Add Button */
 .add-btn {
-  background: none;
+  background: transparent;
   border: none;
-  font-size: 20px;
+  font-size: 22px;
   cursor: pointer;
-  transition: color 0.2s;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: bold;
 }
 
 .add-btn:hover {
-  color: #007bff;
+  background: rgba(0, 0, 0, 0.05);
 }
 
-/* Tree container */
+/* ===========================
+   TREE STRUCTURE
+   ===========================*/
 .tree {
-  flex: 1;
-  overflow-y: auto;
-  padding-right: 5px;
+  padding-top: 8px;
 }
 
-/* Individual tree node */
 .tree-node {
-  margin-left: 10px;
+  margin-bottom: 6px;
+}
+
+/* Row that shows node title + actions */
+.node-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.12s, transform 0.08s;
+}
+
+.node-row:hover {
+  background: rgba(0, 0, 0, 0.05);
+  transform: translateY(-1px);
+}
+
+/* Expand / Collpase Arrow */
+.chev {
+  width: 14px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  font-size: 12px;
+}
+
+/* Title text styling */
+.node-title {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-size: 14px;
 }
 
-/* Node header: title + action buttons */
-.node-header, h3 {
+/* ===========================
+   NODE ACTIONS (Hover Icons)
+   ===========================*/
+.node-actions {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 4px 0;
-  color: #1e1586;
+  gap: 6px;
+  opacity: 0;
+  transition: opacity 0.12s ease-in-out;
 }
 
-/* Node title */
-.node-header span {
-  cursor: pointer;
-  padding: 2px 4px;
-  border-radius: 3px;
-  transition: background 0.2s;
+.node-row:hover .node-actions {
+  opacity: 1;
 }
 
-.node-header span:hover {
-  background: #f2f2f2;
-}
-
-/* Node action buttons + and trash */
-.node-actions button {
-  background: none;
+/* Action Buttons */
+.icon-btn {
+  background: transparent;
   border: none;
   cursor: pointer;
-  margin-left: 5px;
-  font-size: 14px;
-  padding: 2px 4px;
-  transition: color 0.2s;
-}
-
-.node-actions button:hover {
-  color: #007bff;
-}
-
-/* Children container (indent + dashed line) */
-.node-children {
-  margin-left: 15px;
-  border-left: 1px dashed #ccc;
-  padding-left: 8px;
-}
-
-/* Input box for manual naming (3rd-level nodes) */
-.new-node-input {
-  width: 95%;
-  padding: 4px 6px;
-  font-size: 14px;
-  margin-top: 3px;
-  border: 1px solid #ccc;
+  padding: 4px;
   border-radius: 4px;
+  font-size: 14px;
+}
+
+.icon-btn:hover {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+/* Delete button special hover */
+.icon-btn.danger:hover {
+  background: rgba(255, 0, 0, 0.08);
+}
+
+/* ===========================
+   RENAME INPUT FIELD
+   ===========================*/
+.rename-input {
+  width: 100%;
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid #dcdcdc;
+  font-size: 14px;
   outline: none;
 }
 
-.new-node-input:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 3px rgba(0, 123, 255, 0.5);
+.rename-input:focus {
+  border-color: #999;
 }
 
-/* Scrollbar customization for tree */
-.tree::-webkit-scrollbar {
-  width: 6px;
+/* ===========================
+   CHILDREN WRAPPER
+   ===========================*/
+.node-children {
+  margin-left: 14px;
+  border-left: 1px dotted #dcdcdc;
+  padding-left: 8px;
+  margin-top: 4px;
 }
 
-.tree::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 3px;
-}
-
-.tree::-webkit-scrollbar-thumb:hover {
-  background: #999;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .sidebar {
-    width: 200px;
-  }
-
-  .nav-btn {
-    padding: 5px 8px;
-    font-size: 13px;
-  }
-
-  .node-header span {
-    font-size: 13px;
-  }
-
-  .node-actions button {
-    font-size: 12px;
-  }
+/* ===========================
+   EMPTY STATE
+   ===========================*/
+.empty {
+  color: #777;
+  padding: 12px;
+  font-size: 14px;
+  font-style: italic;
 }

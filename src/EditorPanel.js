@@ -10,40 +10,39 @@ const EditorPanel = () => {
   if (!selectedNode) {
     return (
       <div className="editor-placeholder">
-        Select a node to start editing...
+        Select a collection to start editing...
       </div>
     );
   }
 
-  const depth = selectedNode.depth || 1;
+  // 🧠 Dynamically build breadcrumb path for selected node
+  const getNodePath = (pathStr) => {
+    if (!pathStr) return selectedNode.title;
 
-  if (depth !== 4) {
-    return (
-      <div className="editor-placeholder">
-        Select a node to edit...
-      </div>
-    );
-  }
+    const indices = pathStr.split(".");
+    let nodes = tree;
+    const titles = [];
 
-  const nodePath = selectedNode.parentPath
-    ? selectedNode.parentPath
-        .split(".")
-        .map((i, idx, arr) => {
-          let nodes = tree;
-          let title = "";
-          arr.slice(0, idx + 1).forEach((n) => {
-            const nodeIndex = parseInt(n, 10) - 1;
-            title = nodes[nodeIndex]?.title || "";
-            nodes = nodes[nodeIndex]?.children || [];
-          });
-          return title;
-        })
-        .join(" / ")
-    : selectedNode.title;
+    for (let i = 0; i < indices.length; i++) {
+      const idx = parseInt(indices[i], 10) - 1;
+      if (!nodes[idx]) break;
+      titles.push(nodes[idx].title);
+      nodes = nodes[idx].children || [];
+    }
+
+    // Add the selected node title at the end if missing
+    if (!titles.includes(selectedNode.title)) {
+      titles.push(selectedNode.title);
+    }
+
+    return titles.join(" / ");
+  };
+
+  const nodePath = getNodePath(selectedNode.parentPath);
 
   return (
     <div className="editor-panel">
-      <h2 className="editor-title">{nodePath || selectedNode.title}</h2>
+      <h2 className="editor-title">{nodePath}</h2>
       <ReactQuill
         theme="snow"
         value={selectedNode.content || ""}

@@ -1,247 +1,193 @@
+/* Compact header with click-to-open profile menu + dark mode support */
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Poppins:wght@400;600&display=swap');
+
+:root{
+  --brand-color: #e4252b;
+  --header-bg-light: #ffffff;
+  --header-bg-dark: #0e0e0e;
+  --text-light: #1a2b42;
+  --text-dark: #e9e4e4;
+}
+
+/* Base header */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
-  background-color: #a4a4df; /* dark header color */
-  color: #432626;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  font-family: Arial, sans-serif;
+  padding: 8px 16px;             /* smaller padding */
+  background: var(--header-bg-light);
+  color: var(--text-light);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  gap: 12px;
 }
 
-.header .left {
+/* Left area */
+.left {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
 }
 
-.header .left .hamburger {
-  font-size: 24px;
+/* Hamburger (smaller) */
+.hamburger {
+  font-size: 30px;
   background: none;
   border: none;
-  color: #a27b7b;
+  color: var(--text-light);
   cursor: pointer;
-}
-
-.header .left h2 {
-  margin: 0;
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.header .right {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.header .right button {
-  padding: 6px 12px;
-  background-color: #eef2ee; /* green button */
-  border: none;
-  border-radius: 4px;
-  color: #3c3737;
-  cursor: pointer;
-  font-size: 15px;
-  transition: background-color 0.3s;
-}
-
-.header .right button:hover {
-  background-color: #45a049;
-}
-
-.header .right .profile {
-  padding: 6px 12px;
-  background-color: #fcfcfd;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-@media (max-width: 600px) {
-  .header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .header .right {
-    width: 100%;
-    justify-content: space-between;
-  }
-}
-/* ---------------- Profile Dropdown ---------------- */
-.profile-container {
-  position: relative;
-}
-
-.profile-menu {
-  position: absolute;
-  top: 40px; /* below profile button */
-  right: 0;
-  background-color: #222;
-  color: #fff;
+  padding: 6px;
   border-radius: 6px;
-  width: 180px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-  z-index: 100;
 }
 
-.profile-menu ul {
-  list-style: none;
+/* Brand name smaller & stylish */
+.brand-name {
+  font-family: "Montserrat", sans-serif;
+  font-weight: 800;
+  font-size: 18px;                /* smaller font-size */
   margin: 0;
-  padding: 0;
+  color: var(--brand-color) !important; /* keep brand color same in dark/light */
 }
 
-.profile-menu li {
-  padding: 10px 16px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.profile-menu li:hover {
-  background-color: #7f4b4b;
-}
-/* Light/Dark mode base styles */
-body {
-  --bg-color: #ffffff;
-  --text-color: #000000;
-  --header-bg: #f0f0f0;
-  --menu-bg: #ffffff;
-  --menu-text: #000000;
-  background-color: var(--bg-color);
-  color: var(--text-color);
-}
-
-body.dark-mode {
-  --bg-color: #121212;
-  --text-color: #ffffff;
-  --header-bg: #1e1e1e;
-  --menu-bg: #2a2a2a;
-  --menu-text: #ffffff;
-}
-
-/* Header layout */
-.header {
+/* Right area */
+.right {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  background: var(--header-bg);
-  color: var(--text-color);
-  padding: 10px 20px;
+  gap: 12px;
 }
 
-.left h2 {
-  margin: 0;
-}
-
-.right button {
-  background: none;
+/* Invite button: more compact */
+.invite-btn {
+  padding: 8px 12px;
+  border-radius: 8px;
   border: none;
-  color: var(--text-color);
+  background: linear-gradient(90deg, #ff6a94, #3ad0f2);
+  color: white;
+  font-weight: 700;
+  font-family: "Poppins", sans-serif;
+  font-size: 13px;
   cursor: pointer;
-  margin-right: 10px;
+  box-shadow: 0 3px 10px rgba(58,208,242,0.14);
+  transition: transform .12s, box-shadow .12s;
 }
 
-/* Profile */
-.profile-container {
-  position: relative;
-  display: inline-block;
-}
+.invite-btn:hover { transform: translateY(-1px); }
 
+/* Profile circle (smaller) */
 .profile {
-  background: #555;
-  color: rgb(35, 18, 18);
   width: 30px;
   height: 30px;
   border-radius: 50%;
+  background: #d9d9d9;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-weight: 700;
   cursor: pointer;
+  user-select: none;
 }
 
-/* Dropdown menu */
+/* dark mode profile */
+body.dark-mode .profile {
+  background: #2b2b2b;
+  color: #fff;
+}
+
+/* Profile menu (click opens) */
+.profile-container {
+  position: relative;
+}
+
 .profile-menu {
   position: absolute;
   right: 0;
-  top: 45px;
-  background: var(--menu-bg);
-  color: var(--menu-text);
+  top: 44px; /* align under small header */
+  width: 220px;
+  background: var(--menu-bg, #ffffff);
+  color: var(--menu-text, #000);
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-  width: 200px;
-  z-index: 100;
+  box-shadow: 0 8px 24px rgba(16,24,40,0.2);
+  z-index: 120;
+  padding: 6px 0;
 }
 
 .profile-menu ul {
-  list-style: none;
   margin: 0;
-  padding: 10px 0;
+  padding: 0;
+  list-style: none;
 }
 
 .profile-menu li {
-  padding: 10px 20px;
+  padding: 10px 14px;
+  font-size: 14px;
   cursor: pointer;
+  transition: background .12s;
 }
 
 .profile-menu li:hover {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0,0,0,0.04);
 }
 
-/* Dark mode toggle switch */
-.dark-mode-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100px;
-  margin: 0 auto;
+/* Dark-mode variables */
+body.dark-mode {
+  --header-bg-light: var(--header-bg-dark);
+  --text-light: var(--text-dark);
+  --menu-bg: #1a1a1a;
+  --menu-text: #fff;
 }
 
+body.dark-mode .header {
+  background: var(--header-bg-light);
+  color: var(--text-light);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+/* Dark-mode profile menu hover */
+body.dark-mode .profile-menu li:hover { background: rgba(255,255,255,0.03); }
+
+/* Dark-mode brand color stays same */
+body.dark-mode .brand-name { color: var(--brand-color) !important; }
+
+/* Dark-mode invite button keeps readable shadow */
+body.dark-mode .invite-btn { box-shadow: 0 3px 12px rgba(58,208,242,0.18); }
+
+/* Dark-mode slider (switch) */
 .switch {
   position: relative;
-  display: inline-block;
   width: 40px;
   height: 20px;
 }
 
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
+.switch input { display: none; }
 
 .slider {
   position: absolute;
-  cursor: pointer;
-  background-color: #544949;
+  width: 40px;
+  height: 20px;
+  background: #888;
   border-radius: 20px;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  transition: 0.4s;
+  top: 0; left: 0;
+  transition: 0.3s;
 }
 
 .slider:before {
-  position: absolute;
   content: "";
-  height: 14px;
-  width: 14px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
+  position: absolute;
+  left: 3px; top: 3px;
+  width: 14px; height: 14px;
+  background: #fff;
   border-radius: 50%;
-  transition: 0.4s;
+  transition: 0.3s;
 }
 
-input:checked + .slider {
-  background-color: #2196f3;
-}
+input:checked + .slider { background: #3a6ea5; }
+input:checked + .slider:before { transform: translateX(20px); }
 
-input:checked + .slider:before {
-  transform: translateX(20px);
+/* responsive adjustments */
+@media (max-width: 640px) {
+  .header { padding: 8px 12px; }
+  .brand-name { font-size: 16px; }
+  .invite-btn { padding: 6px 10px; font-size: 12px; }
+  .profile { width: 28px; height: 28px; font-size: 12px; }
+  .profile-menu { width: 180px; top: 40px; }
 }

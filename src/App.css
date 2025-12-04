@@ -18,7 +18,55 @@
   flex: 1;
   padding: 20px;
   overflow-y: auto;
+}/* App.css - app layout & main columns */
+:root {
+  --card-bg: #ffffff;
+  --card-text: #143b68;
+  --ql-bg: #ffffff;
+  --ql-text: #222;
 }
+
+body.dark-mode {
+  --card-bg: #111111;
+  --card-text: #e6eef6;
+  --ql-bg: #0a0a0a;
+  --ql-text: #eaeaea;
+}
+
+
+/* header sits at top */
+.header { z-index: 40; }
+
+/* main content area: sidebar + editor column */
+.main-content {
+  display: flex;
+  height: calc(100vh - 56px); /* subtract header height (adjust if your header is different) */
+  min-height: 480px;
+  overflow: hidden;
+}
+
+/* Sidebar fixed width */
+.sidebar {
+  flex: 0 0 300px; /* fixed width */
+  height: 100%;
+  overflow-y: auto;
+}
+
+/* Editor area flexible column */
+.editor-area {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: flex-start;    /* top align the editor card */
+  justify-content: center;    /* center horizontally */
+  padding: 28px 36px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  background: transparent;    /* keep page background visible */
+}
+
+/* global transition for smooth dark/light toggles */
+* { transition: background-color .18s ease, color .18s ease, border-color .18s ease, box-shadow .18s ease; }
+
 
 /* Placeholder styling */
 .editor-placeholder {

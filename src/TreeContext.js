@@ -4,16 +4,49 @@ import { v4 as uuidv4 } from "uuid";
 export const TreeContext = createContext();
 
 export const TreeProvider = ({ children }) => {
+  // Load tree from localStorage or start with empty array
   const [tree, setTree] = useState(() => {
-    const savedTree = localStorage.getItem("treeData");
-    return savedTree ? JSON.parse(savedTree) : [];
+    try {
+      const saved = localStorage.getItem("treeData");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
   });
 
   const [selectedNode, setSelectedNode] = useState(null);
 
+  // Store which nodes are expanded (open)
+  const [expandedIds, setExpandedIds] = useState(() => {
+    try {
+      const saved = localStorage.getItem("treeExpanded");
+      return saved ? new Set(JSON.parse(saved)) : new Set();
+    } catch {
+      return new Set();
+    }
+  });
+
+  // Persist tree to localStorage
   useEffect(() => {
     localStorage.setItem("treeData", JSON.stringify(tree));
   }, [tree]);
+
+  // Persist expandedIds to localStorage
+  useEffect(() => {
+    localStorage.setItem(
+      "treeExpanded",
+      JSON.stringify(Array.from(expandedIds))
+    );
+  }, [expandedIds]);
+
+  const toggleExpand = (id) => {
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
 
   const addNode = (parentId = null, name = null) => {
     const newNode = {
@@ -25,6 +58,7 @@ export const TreeProvider = ({ children }) => {
 
     const addRecursively = (nodes) => {
       if (!parentId) {
+        // Add at root level
         const maxNumber = nodes.reduce((max, node) => {
           const match = node.title.match(/Collection (\d+)/);
           return match ? Math.max(max, parseInt(match[1], 10)) : max;
@@ -33,6 +67,7 @@ export const TreeProvider = ({ children }) => {
         return [...nodes, newNode];
       }
 
+      // Add as child of parentId
       return nodes.map((node) => {
         if (node.id === parentId) {
           const maxNumber = node.children.reduce((max, child) => {
@@ -43,7 +78,10 @@ export const TreeProvider = ({ children }) => {
 
           newNode.title =
             name ||
-            `${node.title}.${maxNumber + 1}`.replace("Collection ", "Collection ");
+            `${node.title}.${maxNumber + 1}`.replace(
+              "Collection ",
+              "Collection "
+            );
           return { ...node, children: [...node.children, newNode] };
         }
 
@@ -56,6 +94,15 @@ export const TreeProvider = ({ children }) => {
     };
 
     setTree((prev) => addRecursively(prev));
+
+    // auto-expand parent so child is visible
+    if (parentId) {
+      setExpandedIds((prev) => {
+        const next = new Set(prev);
+        next.add(parentId);
+        return next;
+      });
+    }
   };
 
   const removeNode = (id) => {
@@ -69,6 +116,11 @@ export const TreeProvider = ({ children }) => {
 
     setTree((prev) => removeRecursively(prev));
     setSelectedNode((prev) => (prev?.id === id ? null : prev));
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
   };
 
   const updateContent = (id, content) => {
@@ -81,7 +133,9 @@ export const TreeProvider = ({ children }) => {
       });
 
     setTree((prev) => updateRecursively(prev));
-    setSelectedNode((prev) => (prev && prev.id === id ? { ...prev, content } : prev));
+    setSelectedNode((prev) =>
+      prev && prev.id === id ? { ...prev, content } : prev
+    );
   };
 
   const updateNodeTitle = (id, newTitle) => {
@@ -94,7 +148,9 @@ export const TreeProvider = ({ children }) => {
       });
 
     setTree((prev) => updateRecursively(prev));
-    setSelectedNode((prev) => (prev && prev.id === id ? { ...prev, title: newTitle } : prev));
+    setSelectedNode((prev) =>
+      prev && prev.id === id ? { ...prev, title: newTitle } : prev
+    );
   };
 
   return (
@@ -107,6 +163,8 @@ export const TreeProvider = ({ children }) => {
         removeNode,
         updateContent,
         updateNodeTitle,
+        expandedIds,
+        toggleExpand,
       }}
     >
       {children}

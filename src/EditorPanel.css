@@ -1,59 +1,105 @@
-.editor-panel {
-  flex: 1;
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-left: 1px solid #ddd;
+/* EditorPanel.css - final tuned for light/dark and centered card */
+
+/* wrapper that centers the card horizontally (top-aligned vertically) */
+.editor-wrapper {
+  width: 100%;
   display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow-y: auto;
-  color:#373333
+  justify-content: center;       /* center horizontally */
+  align-items: flex-start;       /* align to top; change to center for vertical center */
+  padding: 15px 25px;
+  box-sizing: border-box;
+  min-height: calc(100vh - 56px); /* make sure it fills under header */
 }
 
-.editor-title {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 15px;
-  color: #313039;
-  white-space: nowrap;
+/* card that contains the title + quill editor */
+.editor-card {
+  width: 100%;
+  max-width: 1100px;        /* content width */
+  min-height: 90vh;
+  border-radius: 12px;
+  padding: 22px;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 2;
   overflow: hidden;
-  text-overflow: ellipsis;
+  /* light-mode defaults */
+  background: var(--card-bg, #ffffff);
+  color: var(--card-text, #143b68);
+  box-shadow: 0 6px 26px rgba(10, 10, 10, 0.08);
 }
 
-.editor-quill {
-  flex: 1;
-  background-color: #f0eeee;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 14px;
-  height: 100%;
+/* dark-mode card */
+body.dark-mode .editor-card {
+  background: var(--card-bg, #111111);
+  color: var(--card-text, #e6eef6);
+  box-shadow: 0 10px 36px rgba(0,0,0,0.6);
 }
 
-.editor-placeholder {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #585353;
-  font-size: 16px;
-  background-color: #f1f1f1;
-  border-left: 1px solid #ddd;
-  height: 100vh;
+/* title */
+.editor-title {
+  margin: 0 0 14px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--card-text, #143b68);
 }
 
-.ql-toolbar.ql-snow {
-  border-radius: 6px 6px 0 0;
-  border: 1px solid #ccc;
-  border-bottom: none;
-  background-color: #f5f5f5;
+/* quill toolbar */
+.editor-quill .ql-toolbar {
+  border-radius: 10px 10px 0 0;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: var(--ql-bg, #ffffff);
+  padding: 8px;
+  box-sizing: border-box;
 }
 
-.ql-container.ql-snow {
-  border-radius: 0 0 6px 6px;
-  border: 1px solid #ccc;
+/* quill editor container */
+.editor-quill .ql-container {
+  border-radius: 0 0 10px 10px;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: var(--ql-bg, #ffffff);
+  color: var(--ql-text, #222);
+  min-height: calc(48vh);
+  padding: 14px;
+  box-sizing: border-box;
 }
 
-.ql-editor {
-  min-height: 300px;
-  padding: 12px;
+/* placeholder colors */
+.editor-quill .ql-editor.ql-blank::before {
+  color: rgba(0,0,0,0.35);
+}
+
+/* dark mode toolbar/editor tweaks */
+body.dark-mode .editor-quill .ql-toolbar {
+  background: #171717 !important;
+  border: 1px solid rgba(255,255,255,0.06) !important;
+}
+
+body.dark-mode .editor-quill .ql-container {
+  background: #0a0a0a;
+  border: 1px solid rgba(255,255,255,0.06);
+  color: #eaeaea;
+}
+
+body.dark-mode .editor-quill .ql-editor.ql-blank::before {
+  color: rgba(255,255,255,0.14);
+}
+
+/* ensure icons remain visible in dark */
+body.dark-mode .ql-toolbar button,
+body.dark-mode .ql-toolbar .ql-picker-label {
+  color: #e6e6e6;
+}
+
+/* responsive */
+@media (max-width: 980px) {
+  .editor-wrapper { padding: 20px; }
+  .editor-card { max-width: 92%; padding: 18px; }
+  .editor-quill .ql-container { min-height: 40vh; }
+}
+
+@media (max-width: 640px) {
+  .editor-card { padding: 12px; border-radius: 10px; }
+  .editor-title { font-size: 18px; }
+  .editor-quill .ql-container { min-height: 36vh; }
 }

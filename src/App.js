@@ -1,3 +1,4 @@
+// src/App.js
 import React from "react";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
@@ -10,10 +11,13 @@ function App() {
     <TreeProvider>
       <div className="app">
         <Header />
-        
         <div className="main-content">
           <Sidebar />
-          <EditorPanel />
+          <div className="editor-area">
+            
+              <EditorPanel />
+            
+          </div>
         </div>
       </div>
     </TreeProvider>

@@ -1,4 +1,7 @@
+// src/Sidebar.js
+
 import React, { useContext, useState, useRef } from "react";
+import { FiChevronRight, FiChevronDown } from "react-icons/fi";
 import { TreeContext } from "./TreeContext";
 import "./Sidebar.css";
 
@@ -8,15 +11,20 @@ const TreeNode = ({ node, parentPath = "" }) => {
     removeNode,
     updateNodeTitle,
     setSelectedNode,
+    selectedNode,
     expandedIds,
     toggleExpand,
   } = useContext(TreeContext);
 
   const [isRenaming, setIsRenaming] = useState(false);
-  const [newTitle, setNewTitle] = useState(node.title);
+  const [newTitle, setNewTitle] = useState(node.title || "");
   const nodeRef = useRef(null);
 
   const depth = parentPath ? parentPath.split(".").length : 1;
+  const isSelected = selectedNode?.id === node.id;
+
+  const hasChildren = node.children && node.children.length > 0;
+  const isExpanded = expandedIds.has(node.id);
 
   const handleSelect = (e) => {
     e.stopPropagation();
@@ -41,62 +49,49 @@ const TreeNode = ({ node, parentPath = "" }) => {
     setIsRenaming(false);
   };
 
-  const handleAddClick = (e) => {
-    e.stopPropagation();
-    addNode(node.id);
-  };
-
-  const handleRemoveClick = (e) => {
-    e.stopPropagation();
-    removeNode(node.id);
-  };
-
-  const isExpanded = expandedIds.has(node.id);
-  const hasChildren = node.children && node.children.length > 0;
-
   return (
-    <div className="tree-node" style={{ paddingLeft: (depth - 1) * 14 }}>
+    <div className="tree-node-wrapper" style={{ paddingLeft: (depth - 1) * 14 }}>
       <div
-        className="node-row"
+        className={`node-row ${isSelected ? "selected" : ""}`}
         onClick={handleSelect}
         onDoubleClick={handleRenameStart}
-        role="button"
       >
         <div
-          className="chev"
+          className="node-chevron"
           onClick={(e) => {
             e.stopPropagation();
             if (hasChildren) toggleExpand(node.id);
           }}
         >
-          {hasChildren ? (isExpanded ? "▾" : "▸") : <span style={{ width: 12, display: "inline-block" }} />}
-        </div>
-
-        <div className="node-title" title={node.title}>
-          {isRenaming ? (
-            <input
-              ref={nodeRef}
-              className="rename-input"
-              value={newTitle}
-              onChange={(e) => setNewTitle(e.target.value)}
-              onKeyDown={handleRenameConfirm}
-              onBlur={handleBlur}
-            />
+          {hasChildren ? (
+            isExpanded ? <FiChevronDown /> : <FiChevronRight />
           ) : (
-            <span>{node.title}</span>
+            <span className="chev-placeholder" />
           )}
         </div>
 
+        <div className="node-meta">
+          <span className={`status-dot ${node.children?.length ? "green" : "gray"}`} />
+          <div className="node-title">
+            {isRenaming ? (
+              <input
+                ref={nodeRef}
+                className="rename-input"
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                onKeyDown={handleRenameConfirm}
+                onBlur={handleBlur}
+              />
+            ) : (
+              <span className="node-text">{node.title}</span>
+            )}
+          </div>
+        </div>
+
         <div className="node-actions">
-          <button className="icon-btn" onClick={handleAddClick} title="Add child">
-            ＋
-          </button>
-          <button className="icon-btn" onClick={handleRenameStart} title="Rename">
-            ✎
-          </button>
-          <button className="icon-btn danger" onClick={handleRemoveClick} title="Delete">
-            🗑
-          </button>
+          <button className="icon-btn" onClick={() => addNode(node.id)}>＋</button>
+          <button className="icon-btn" onClick={handleRenameStart}>✎</button>
+          <button className="icon-btn danger" onClick={() => removeNode(node.id)}>🗑</button>
         </div>
       </div>
 
@@ -117,30 +112,36 @@ const TreeNode = ({ node, parentPath = "" }) => {
 
 const Sidebar = () => {
   const { tree, addNode } = useContext(TreeContext);
+  const [activeNav, setActiveNav] = useState("All");
 
   return (
     <aside className="sidebar">
-      <div className="sidebar-nav">
-        <button className="nav-btn">All</button>
-        <button className="nav-btn">Board</button>
-        <button className="nav-btn">Graph</button>
-        <button className="nav-btn">Recent</button>
+      <div className="sidebar-top">
+        <div className="sidebar-nav">
+          {["All", "Board", "Graph", "Recent"].map((item) => (
+            <button
+              key={item}
+              className={`nav-btn ${activeNav === item ? "active" : ""}`}
+              onClick={() => setActiveNav(item)}
+            >
+              {item}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="sidebar-header">
         <h3>Collections</h3>
-        <button className="add-btn" onClick={() => addNode(null)}>
-          ＋
-        </button>
+        <button className="add-btn" onClick={() => addNode(null)}>＋</button>
       </div>
 
-      <div className="tree" role="tree">
-        {tree.length === 0 ? (
-          <div className="empty">No collections yet — click ＋ to add</div>
-        ) : (
-          tree.map((node, index) => (
-            <TreeNode key={node.id} node={node} parentPath={`${index + 1}`} />
+      <div className="tree">
+        {tree.length ? (
+          tree.map((node, i) => (
+            <TreeNode key={node.id} node={node} parentPath={`${i + 1}`} />
           ))
+        ) : (
+          <div className="empty">No collections yet — click ＋ to add</div>
         )}
       </div>
     </aside>

@@ -1,11 +1,16 @@
-// Sidebar.jsx
 import React, { useContext, useState, useRef } from "react";
 import { TreeContext } from "./TreeContext";
 import "./Sidebar.css";
 
 const TreeNode = ({ node, parentPath = "" }) => {
-  const { addNode, removeNode, updateNodeTitle, setSelectedNode, expandedIds, toggleExpand } =
-    useContext(TreeContext);
+  const {
+    addNode,
+    removeNode,
+    updateNodeTitle,
+    setSelectedNode,
+    expandedIds,
+    toggleExpand,
+  } = useContext(TreeContext);
 
   const [isRenaming, setIsRenaming] = useState(false);
   const [newTitle, setNewTitle] = useState(node.title);
@@ -15,7 +20,6 @@ const TreeNode = ({ node, parentPath = "" }) => {
 
   const handleSelect = (e) => {
     e.stopPropagation();
-    // pass parentPath into selected node so EditorPanel can build breadcrumb
     setSelectedNode({ ...node, parentPath });
   };
 
@@ -53,12 +57,18 @@ const TreeNode = ({ node, parentPath = "" }) => {
   return (
     <div className="tree-node" style={{ paddingLeft: (depth - 1) * 14 }}>
       <div
-        className={`node-row ${/* selected styling is controlled by EditorPanel's selectedNode */ ""}`}
+        className="node-row"
         onClick={handleSelect}
         onDoubleClick={handleRenameStart}
         role="button"
       >
-        <div className="chev" onClick={(e) => { e.stopPropagation(); if (hasChildren) toggleExpand(node.id); }}>
+        <div
+          className="chev"
+          onClick={(e) => {
+            e.stopPropagation();
+            if (hasChildren) toggleExpand(node.id);
+          }}
+        >
           {hasChildren ? (isExpanded ? "▾" : "▸") : <span style={{ width: 12, display: "inline-block" }} />}
         </div>
 
@@ -78,9 +88,15 @@ const TreeNode = ({ node, parentPath = "" }) => {
         </div>
 
         <div className="node-actions">
-          <button className="icon-btn" onClick={handleAddClick} title="Add child">＋</button>
-          <button className="icon-btn" onClick={handleRenameStart} title="Rename">✎</button>
-          <button className="icon-btn danger" onClick={handleRemoveClick} title="Delete">🗑</button>
+          <button className="icon-btn" onClick={handleAddClick} title="Add child">
+            ＋
+          </button>
+          <button className="icon-btn" onClick={handleRenameStart} title="Rename">
+            ✎
+          </button>
+          <button className="icon-btn danger" onClick={handleRemoveClick} title="Delete">
+            🗑
+          </button>
         </div>
       </div>
 
@@ -113,7 +129,9 @@ const Sidebar = () => {
 
       <div className="sidebar-header">
         <h3>Collections</h3>
-        <button className="add-btn" onClick={() => addNode(null)}>＋</button>
+        <button className="add-btn" onClick={() => addNode(null)}>
+          ＋
+        </button>
       </div>
 
       <div className="tree" role="tree">

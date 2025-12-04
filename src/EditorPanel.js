@@ -15,7 +15,7 @@ const EditorPanel = () => {
     );
   }
 
-  // 🧠 Dynamically build breadcrumb path for selected node
+  // Build breadcrumb path for selected node from parentPath like "1.2"
   const getNodePath = (pathStr) => {
     if (!pathStr) return selectedNode.title;
 
@@ -25,12 +25,12 @@ const EditorPanel = () => {
 
     for (let i = 0; i < indices.length; i++) {
       const idx = parseInt(indices[i], 10) - 1;
-      if (!nodes[idx]) break;
+      if (!nodes || !nodes[idx]) break;
       titles.push(nodes[idx].title);
       nodes = nodes[idx].children || [];
     }
 
-    // Add the selected node title at the end if missing
+    // Ensure selected node title is included at end
     if (!titles.includes(selectedNode.title)) {
       titles.push(selectedNode.title);
     }

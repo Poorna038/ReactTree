@@ -8,12 +8,10 @@ const Header = () => {
   const toggleMenu = () => setMenuOpen(!menuOpen);
   const closeMenu = () => setMenuOpen(false);
 
-  // Toggle dark mode
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
   };
 
-  // Apply dark mode to body class
   useEffect(() => {
     if (darkMode) {
       document.body.classList.add("dark-mode");

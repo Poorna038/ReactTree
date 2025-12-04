@@ -7,7 +7,7 @@ const Header = () => {
   const containerRef = useRef(null);
 
   const toggleMenu = () => setMenuOpen((v) => !v);
-  const closeMenu = () => setMenuOpen(false);
+  
 
   const toggleDarkMode = () => {
     setDarkMode((d) => !d);
